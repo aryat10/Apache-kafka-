@@ -7,18 +7,25 @@ async function init() {
     await producer.connect();
     console.log('Producer connected to Kafka');
 
+    const riderUpdate = {
+        name: 'Sumit Yadav',
+        phone: '+919876543210',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    };
+
     await producer.send({
         topic: 'rider-updates',
         messages: [
-            { key: 'name', value: 'Sumit Yadav' },
-            { key: 'phone', value: '+919876543210' },
-            { key: 'status', value: 'pending' },
-            { key: 'createdAt', value: new Date().toISOString() },
-            { key: 'updatedAt', value: new Date().toISOString() },
-        ]
+            {
+                key: 'rider1',
+                value: JSON.stringify(riderUpdate), // ✅ send as a single JSON string
+            },
+        ],
     });
 
-    console.log('Message sent to Kafka');
+    console.log('Message sent to Kafka:', riderUpdate);
     await producer.disconnect();
     console.log('Producer disconnected from Kafka');
 }

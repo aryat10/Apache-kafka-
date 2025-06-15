@@ -12,11 +12,23 @@ async function init() {
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            console.log({
-                partition,
-                offset: message.offset,
-                value: message.value.toString(),
-            });
+            try {
+                const data = JSON.parse(message.value.toString());
+                console.log({
+                    topic,
+                    partition,
+                    offset: message.offset,
+                    data, // structured object output
+                });
+            } catch (error) {
+                console.error('Error parsing message:', error);
+                console.log({
+                    topic,
+                    partition,
+                    offset: message.offset,
+                    raw: message.value.toString(), // fallback to raw value
+                });
+            }
         },
     });
 }
